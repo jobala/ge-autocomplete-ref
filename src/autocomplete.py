@@ -15,17 +15,17 @@ class Trie:
 
     def insert(self, word: str):
         i = 0
-        tmp = self.root
+        current_node = self.root
 
         while i < len(word):
             char = word[i]
 
-            if char not in tmp.next:
-                tmp.next[char] = TrieNode()
-            tmp = tmp.next[char]
+            if char not in current_node.next:
+                current_node.next[char] = TrieNode()
+            current_node = current_node.next[char]
 
             if i == len(word) - 1:
-                tmp.leaf = True
+                current_node.leaf = True
             i += 1
 
     def complete(self, search_term: str) -> List[str]:
