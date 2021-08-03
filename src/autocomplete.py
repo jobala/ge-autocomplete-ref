@@ -1,4 +1,5 @@
 from typing import List
+from sys import argv
 
 
 class TrieNode:
@@ -27,15 +28,15 @@ class Trie:
                 tmp.leaf = True
             i += 1
 
-    def autocomplete(self, search_term: str) -> List[str]:
+    def complete(self, search_term: str) -> List[str]:
         tmp = self.root
 
         def move_root(pos=0):
             nonlocal tmp
 
-            for c in tmp.next.keys():
-                if pos < len(search_term) and c == search_term[pos]:
-                    tmp = tmp.next[c]
+            for char in tmp.next:
+                if pos < len(search_term) and char == search_term[pos]:
+                    tmp = tmp.next[char]
                     move_root(pos + 1)
 
         move_root()
@@ -43,13 +44,15 @@ class Trie:
         return self.search_results
 
     def _traverse(self, node: TrieNode, prefix: str, res='', char=""):
+        """Traverses the Trie from a given node to find all completion paths
+        """
         res += char
 
         if node.leaf:
             self.search_results.append(prefix + res)
 
-        for c in node.next.keys():
-            self._traverse(node.next[c], prefix, res, c)
+        for key in node.next:
+            self._traverse(node.next[key], prefix, res, key)
 
 
 if __name__ == '__main__':
@@ -59,7 +62,6 @@ if __name__ == '__main__':
         for line in file.readlines():
             trie.insert(line.strip().replace('"', '').replace(',', ''))
 
-    res = trie.autocomplete("/me/c")[:15]
+    res = trie.complete(argv[1])[:15]
     for r in res:
         print(r)
-
